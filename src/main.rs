@@ -11,13 +11,18 @@ extern crate factor_graph;
 
 use factor_graph::FactorGraph;
 
+fn dummy_func(args: &[String]) -> i32 {
+    args.len() as i32
+}
+
 fn main() {
     let mut graph = FactorGraph::new();
 
     graph.add_var("first");
     graph.add_var("second");
-    graph.add_factor(vec!(String::from("first")));
-    graph.add_factor(vec!(String::from("first"), String::from("second")));
+    graph.add_factor(vec!(String::from("first")), dummy_func);
+    graph.add_factor(vec!(String::from("first"), String::from("second")), dummy_func);
+    graph.add_factor(vec!(String::from("first")), |args| 0);
 
     println!("Graph: {:#?}", graph);
 }

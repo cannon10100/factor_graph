@@ -9,6 +9,8 @@ unused_import_braces, unused_qualifications)]
 
 use std::collections::HashMap;
 
+type PotentialFunc = fn(&[String]) -> i32;
+
 /// Struct representing the full factor graph.
 #[derive(Debug)]
 pub struct FactorGraph {
@@ -17,16 +19,16 @@ pub struct FactorGraph {
 }
 
 /// Struct representing a single variable.
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Variable {
     name: String,
     factors: Vec<Factor>,
 }
 
 /// Struct representing a factor over several variables.
-#[derive(Debug, Clone, PartialEq)]
 pub struct Factor {
     variables: Vec<String>,
+    func: PotentialFunc,
 }
 
 impl FactorGraph {
@@ -44,17 +46,15 @@ impl FactorGraph {
     }
 
     /// Add a new factor with the specified variables to the factor graph.
-    pub fn add_factor(&mut self, variables: Vec<String>) {
-        let factor = Factor::new(variables.clone());
-
+    pub fn add_factor(&mut self, variables: Vec<String>, func: PotentialFunc) {
         for var in variables.iter() {
             match self.variables.get_mut(var) {
-                Some(var_obj) => var_obj.add_factor(factor.clone()),
+                Some(var_obj) => var_obj.add_factor(Factor::new(variables.clone(), func)),
                 None => panic!("The variable {} was not found in the factor graph.", var)
             }
         }
 
-        self.factors.push(factor);
+        self.factors.push(Factor::new(variables.clone(), func));
     }
 }
 
@@ -75,10 +75,19 @@ impl Variable {
 
 impl Factor {
     /// Create a new Factor with associated variables.
-    pub fn new(variables: Vec<String>) -> Factor {
+    pub fn new(variables: Vec<String>, func: PotentialFunc) -> Factor {
         Factor {
             variables,
+            func
         }
+    }
+}
+
+impl std::fmt::Debug for Factor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "Factor {{ variables: {:?}, <potential_func: {}> }}",
+               self.variables,
+               (self.func)(&self.variables))
     }
 }
 
@@ -86,13 +95,17 @@ impl Factor {
 mod tests {
     use super::*;
 
+    fn dummy_func(args: &[String]) -> i32 {
+        args.len() as i32
+    }
+
     #[test]
     #[should_panic]
     fn factor_with_nonexistent_var() {
         let mut graph = FactorGraph::new();
 
         graph.add_var("first");
-        graph.add_factor(vec!(String::from("second")));
+        graph.add_factor(vec!(String::from("second")), dummy_func);
     }
 
     #[test]
@@ -100,8 +113,9 @@ mod tests {
         let mut graph = FactorGraph::new();
 
         graph.add_var("first");
-        graph.add_factor(vec!(String::from("first")));
+        graph.add_factor(vec!(String::from("first")), dummy_func);
 
-        assert_eq!(graph.variables.get("first").unwrap().factors[0], graph.factors[0])
+        assert_eq!(graph.variables.get("first").unwrap().factors[0].variables,
+                   graph.factors[0].variables)
     }
 }
