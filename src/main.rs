@@ -15,7 +15,9 @@ fn main() {
     let mut graph = FactorGraph::new();
 
     graph.add_var("first");
+    graph.add_var("second");
     graph.add_factor(vec!(String::from("first")));
+    graph.add_factor(vec!(String::from("first"), String::from("second")));
 
-    println!("Graph: {:?}", graph);
+    println!("Graph: {:#?}", graph);
 }
