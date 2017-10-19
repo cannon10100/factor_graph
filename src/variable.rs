@@ -11,14 +11,14 @@ use *;
 
 /// Trait representing a variable stored in the factor graph.
 pub trait Variable : FactorGraphItem {
+    /// Get this variable's id.
+    fn get_var_id(&self) -> u32;
+
     /// Add an associated factor to this variable.
     fn add_factor(&mut self, factor: Factor);
 
     /// Get the factors associated to this variable.
     fn get_factors(&self) -> &Vec<Factor>;
-
-    /// Get this variable's id
-    fn get_id(&self) -> u32;
 }
 
 /// Struct representing a single variable.
@@ -46,12 +46,12 @@ impl<T: std::fmt::Debug + 'static> DiscreteVariable<T> {
 }
 
 impl<T: std::fmt::Debug + 'static> Variable for DiscreteVariable<T> {
-    fn add_factor(&mut self, factor: Factor) {
-        self.factors.push(factor);
+    fn get_var_id(&self) -> u32 {
+        self.id
     }
 
-    fn get_id(&self) -> u32 {
-        self.id.clone()
+    fn add_factor(&mut self, factor: Factor) {
+        self.factors.push(factor);
     }
 
     fn get_factors(&self) -> &Vec<Factor> {
@@ -59,12 +59,32 @@ impl<T: std::fmt::Debug + 'static> Variable for DiscreteVariable<T> {
     }
 }
 
-impl<T: std::fmt::Debug> FactorGraphItem for DiscreteVariable<T> {
+impl<T: std::fmt::Debug + Sized> FactorGraphItem for DiscreteVariable<T> {
     fn get_name(&self) -> String {
         self.name.clone()
     }
 
+    fn get_id(&self) -> u32 {
+        self.id.clone()
+    }
+
     fn is_factor(&self) -> bool {
         false
+    }
+
+    fn add_to_tree(&self, parent_id: u32, tree: &mut SpanningTree) {
+        if !tree.has_node(self.id) {
+            tree.add_child(parent_id, self.id);
+        }
+    }
+
+    fn get_neighbors(&self, variables: &HashMap<String, Box<Variable>>) -> Vec<u32> {
+        let mut ret_vec = vec!();
+
+        for factor in self.factors.iter() {
+            ret_vec.push(factor.get_id());
+        }
+
+        ret_vec
     }
 }

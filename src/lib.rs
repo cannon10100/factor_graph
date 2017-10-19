@@ -14,22 +14,34 @@ extern crate dot;
 mod render;
 pub mod variable;
 pub mod factor;
+pub mod tree;
 
 use std::collections::HashMap;
+use std::collections::VecDeque;
 use std::io::Write;
 
 pub use variable::{Variable, DiscreteVariable};
 pub use factor::Factor;
+pub use tree::{SpanningTree, TreeNode};
 
 type PotentialFunc = fn(&[u32]) -> i32;
 
 /// Trait representing a generic item stored in the factor graph.
 pub trait FactorGraphItem : std::fmt::Debug {
-    /// Get the name of this item
+    /// Get the name of this item.
     fn get_name(&self) -> String;
 
-    /// Return whether the item is a factor
+    /// Get this item's id.
+    fn get_id(&self) -> u32;
+
+    /// Return whether the item is a factor.
     fn is_factor(&self) -> bool;
+
+    /// Get the neighbors of this item in the factor graph.
+    fn get_neighbors(&self, variables: &HashMap<String, Box<Variable>>) -> Vec<u32>;
+
+    /// Add this node to the spanning tree.
+    fn add_to_tree(&self, parent_id: u32, tree: &mut SpanningTree);
 }
 
 /// Struct representing the full factor graph.
@@ -84,6 +96,47 @@ impl FactorGraph {
             Ok(_) => println!("Wrote factor graph"),
             Err(_) => panic!("An error occurred writing the factor graph"),
         }
+    }
+
+    /// Make a spanning tree from the current factor graph with the specified root variable.
+    pub fn make_spanning_tree(&self, var: &str) -> SpanningTree {
+        let root = match self.variables.get(var) {
+            Some(v) => v,
+            None => panic!("Root variable not found")
+        };
+
+        let mut spanning_tree = SpanningTree::new(root.get_id(), self.all_items.len());
+        let mut queue: VecDeque<&Box<FactorGraphItem>> = VecDeque::new();
+
+        for n_id in root.get_neighbors(&self.variables) {
+            spanning_tree.add_child((*root).get_id(), n_id);
+            if queue.iter().filter(|x| (*x).get_id() == n_id).count() == 0 {
+                queue.push_back(match self.all_items.get(n_id as usize) {
+                    Some(y) => y,
+                    None => panic!("Could not find id in factor graph")
+                });
+            }
+        }
+
+        // BFS through the graph, recording the spanning tree.
+        while !queue.is_empty() {
+            let node = match queue.pop_front() {
+                Some(x) => x,
+                None => panic!("Queue is unexpectedly empty")
+            };
+
+            for n_id in node.get_neighbors(&self.variables) {
+                spanning_tree.add_child((*node).get_id(), n_id);
+                if queue.iter().filter(|x| (*x).get_id() == n_id).count() == 0 {
+                    queue.push_back(match self.all_items.get(n_id as usize) {
+                        Some(y) => y,
+                        None => panic!("Could not find id in factor graph")
+                    });
+                }
+            }
+        }
+
+        spanning_tree
     }
 }
 

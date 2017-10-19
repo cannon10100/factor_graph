@@ -8,6 +8,7 @@ unused_import_braces, unused_qualifications)]
 //! Module holding factor-specific functionality
 
 use *;
+use std::any::Any;
 
 type PotentialFunc = fn(&[u32]) -> i32;
 
@@ -28,11 +29,6 @@ impl Factor {
         }
     }
 
-    /// Function to get a Factor's id
-    pub fn get_id(&self) -> u32 {
-        self.id.clone()
-    }
-
     /// Function to get variables associated with this factor
     pub fn get_variables(&self) -> &Vec<String> {
         &self.variables
@@ -51,7 +47,29 @@ impl FactorGraphItem for Factor {
         format!("factor<{:?}>", self.variables)
     }
 
+    fn get_id(&self) -> u32 {
+        self.id.clone()
+    }
+
     fn is_factor(&self) -> bool {
         true
+    }
+
+    fn add_to_tree(&self, parent_id: u32, tree: &mut SpanningTree) {
+        if !tree.has_node(self.id) {
+            tree.add_child(parent_id, self.id);
+        }
+    }
+
+    fn get_neighbors(&self, variables: &HashMap<String, Box<Variable>>) -> Vec<u32> {
+        let mut ret_vec = Vec::with_capacity(self.variables.len());
+
+        for variable in self.variables.iter() {
+            match variables.get(variable) {
+                Some(var_obj) => ret_vec.push(var_obj.get_var_id()),
+                None => panic!("Variable not found for factor.")
+            }
+        }
+        ret_vec
     }
 }
