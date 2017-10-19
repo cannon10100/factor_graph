@@ -9,25 +9,24 @@ unused_import_braces, unused_qualifications)]
 
 extern crate dot;
 
+mod render;
+mod variable;
+mod factor;
+
 use std::collections::HashMap;
-use std::borrow::Cow;
 use std::io::Write;
 
-type Nd = usize;
-type Ed = (usize,usize);
+use variable::{Variable, DiscreteVariable};
+use factor::Factor;
 
 type PotentialFunc = fn(&[u32]) -> i32;
 
-/// Trait representing a variable stored in the factor graph.
-trait Variable : FactorGraphItem {
-    fn add_factor(&mut self, factor: Factor);
-    fn get_factors(&self) -> &Vec<Factor>;
-    fn get_id(&self) -> u32;
-}
-
 /// Trait representing a generic item stored in the factor graph.
-trait FactorGraphItem : std::fmt::Debug {
+pub trait FactorGraphItem : std::fmt::Debug {
+    /// Get the name of this item
     fn get_name(&self) -> String;
+
+    /// Return whether the item is a factor
     fn is_factor(&self) -> bool;
 }
 
@@ -38,23 +37,6 @@ pub struct FactorGraph {
     factors: Vec<Factor>,
     all_items: Vec<Box<FactorGraphItem>>,
     next_id: u32,
-}
-
-/// Struct representing a single variable.
-#[derive(Debug)]
-pub struct DiscreteVariable<T: std::fmt::Debug + 'static> {
-    id: u32,
-    name: String,
-    factors: Vec<Factor>,
-    val_names: Vec<T>,
-    domain: Vec<u32>,
-}
-
-/// Struct representing a factor over several variables.
-pub struct Factor {
-    id: u32,
-    variables: Vec<String>,
-    func: PotentialFunc,
 }
 
 impl FactorGraph {
@@ -103,146 +85,11 @@ impl FactorGraph {
     }
 }
 
-impl<'a> dot::Labeller<'a, Nd, Ed> for FactorGraph {
-    fn graph_id(&'a self) -> dot::Id<'a> {
-        match dot::Id::new("factor_graph") {
-            Ok(some) => some,
-            Err(_) => panic!("Something went wrong setting graph_id")
-        }
-    }
-
-    fn node_id(&'a self, n: &Nd) -> dot::Id<'a> {
-        match dot::Id::new(format!("N{}", *n)) {
-            Ok(some) => some,
-            Err(_) => panic!("Node_id failed")
-        }
-    }
-
-    fn node_label<'b>(&'b self, n: &Nd) -> dot::LabelText<'b> {
-        dot::LabelText::LabelStr(self.all_items[*n].get_name().into())
-    }
-
-    fn node_shape(&'a self, node: &Nd) -> Option<dot::LabelText<'a>> {
-        match self.all_items[*node].is_factor() {
-            true => Some(dot::LabelText::LabelStr("box".into())),
-            false => Some(dot::LabelText::LabelStr("circle".into()))
-        }
-    }
-
-    fn edge_end_arrow(&'a self, _e: &Ed) -> dot::Arrow {
-        dot::Arrow::none()
-    }
-}
-
-impl<'a> dot::GraphWalk<'a, Nd, Ed> for FactorGraph {
-    fn nodes(&self) -> dot::Nodes<'a,Nd> {
-        let mut nodes = Vec::with_capacity(self.next_id as usize);
-        for i in 0..self.next_id {
-            nodes.push(i as usize);
-        }
-        nodes.sort();
-        nodes.dedup();
-        Cow::Owned(nodes)
-    }
-
-    fn edges(&'a self) -> dot::Edges<'a, Ed> {
-        let mut edges = vec!();
-        for (_, variable) in &self.variables {
-            for factor in variable.get_factors() {
-                edges.push((variable.get_id() as usize, factor.get_id() as usize));
-            }
-        }
-
-        Cow::Owned(edges)
-    }
-
-    fn source(&self, e: &Ed) -> Nd { let &(s,_) = e; s }
-
-    fn target(&self, e: &Ed) -> Nd { let &(_,t) = e; t }
-}
-
-impl<T: std::fmt::Debug + 'static> DiscreteVariable<T> {
-    /// Create a new Variable.
-    pub fn new(id: u32, name: &str, val_names: Vec<T>) -> DiscreteVariable<T> {
-        let num_names = val_names.len() as u32;
-        DiscreteVariable {
-            id,
-            name: String::from(name),
-            factors: vec!(),
-            val_names,
-            domain: (0..(num_names + 1)).collect()
-        }
-    }
-}
-
-impl<T: std::fmt::Debug + 'static> Variable for DiscreteVariable<T> {
-    /// Add an associated factor to this variable.
-    fn add_factor(&mut self, factor: Factor) {
-        self.factors.push(factor);
-    }
-
-    fn get_id(&self) -> u32 {
-        self.id.clone()
-    }
-
-    fn get_factors(&self) -> &Vec<Factor> {
-        &self.factors
-    }
-}
-
-impl<T: std::fmt::Debug> FactorGraphItem for DiscreteVariable<T> {
-    fn get_name(&self) -> String {
-        self.name.clone()
-    }
-
-    fn is_factor(&self) -> bool {
-        false
-    }
-}
-
-impl Factor {
-    /// Create a new Factor with associated variables.
-    pub fn new(id: u32, variables: Vec<String>, func: PotentialFunc) -> Factor {
-        Factor {
-            id,
-            variables,
-            func
-        }
-    }
-
-    /// Function to get a Factor's id
-    pub fn get_id(&self) -> u32 {
-        self.id.clone()
-    }
-
-    /// Function to get variables associated with this factor
-    pub fn get_variables(&self) -> &Vec<String> {
-        &self.variables
-    }
-}
-
-impl std::fmt::Debug for Factor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "Factor {{ variables: {:?}, <potential_func> }}",
-               self.variables) // TODO: actually pass in values
-    }
-}
-
-impl FactorGraphItem for Factor {
-    fn get_name(&self) -> String {
-        format!("factor<{:?}>", self.variables)
-    }
-
-    fn is_factor(&self) -> bool {
-        true
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn dummy_func(args: &[String]) -> i32 {
+    fn dummy_func(args: &[u32]) -> i32 {
         args.len() as i32
     }
 
@@ -251,7 +98,7 @@ mod tests {
     fn factor_with_nonexistent_var() {
         let mut graph = FactorGraph::new();
 
-        graph.add_var("first");
+        graph.add_discrete_var("first", vec![1, 2]);
         graph.add_factor(vec!(String::from("second")), dummy_func);
     }
 
@@ -259,10 +106,10 @@ mod tests {
     fn factor_is_added_to_var() {
         let mut graph = FactorGraph::new();
 
-        graph.add_var("first");
+        graph.add_discrete_var("first", vec![1, 2]);
         graph.add_factor(vec!(String::from("first")), dummy_func);
 
-        assert_eq!(graph.variables.get("first").unwrap().factors[0].variables,
-                   graph.factors[0].variables)
+        assert_eq!(graph.variables.get("first").unwrap().get_factors()[0].get_variables(),
+                   graph.factors[0].get_variables())
     }
 }
