@@ -5,6 +5,8 @@ unsafe_code,
 unstable_features,
 unused_import_braces, unused_qualifications)]
 
+#![doc(html_root_url = "https://cannon10100.github.io/factor_graph/")]
+
 //! Crate allowing creation and manipulation of probabilistic factor graphs.
 
 extern crate dot;
