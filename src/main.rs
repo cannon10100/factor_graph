@@ -18,15 +18,41 @@ fn dummy_func(args: &[u32]) -> i32 {
 }
 
 fn main() {
+    // As an example, we build an Ising model
     let mut graph = FactorGraph::new();
 
-    graph.add_discrete_var("first", vec![1, 2]);
-    graph.add_discrete_var("second", vec![3, 4]);
-    graph.add_factor(vec!(String::from("first")), dummy_func);
-    graph.add_factor(vec!(String::from("first"), String::from("second")), dummy_func);
-    graph.add_factor(vec!(String::from("first")), |args| 0);
+    for i in 0..10 {
+        for j in 0..10 {
+            graph.add_discrete_var(&format!("({},{})", i, j), vec![0,1]);
+        }
+    }
 
-    println!("Graph: {:#?}", graph);
+    // Add factors between adjacent nodes 
+    for i in 0..10 {
+        for j in 0..10 {
+            if i > 0 {
+                graph.add_factor(vec!(String::from(format!("({},{})", i - 1, j)), 
+                                    String::from(format!("({},{})", i, j))), dummy_func);
+            }
+
+            if j > 0 {
+                graph.add_factor(vec!(String::from(format!("({},{})", i, j - 1)), 
+                                    String::from(format!("({},{})", i, j))), dummy_func);
+            }
+
+            if j < 9 {
+                graph.add_factor(vec!(String::from(format!("({},{})", i, j + 1)), 
+                                    String::from(format!("({},{})", i, j))), dummy_func);
+            }
+
+            if i < 9 {
+                graph.add_factor(vec!(String::from(format!("({},{})", i + 1, j)), 
+                                    String::from(format!("({},{})", i, j))), dummy_func);
+            }
+        }
+    }
+
+    // println!("Graph: {:#?}", graph);
 
     let mut f = match File::create("factor_graph.dot") {
         Ok(some) => some,
