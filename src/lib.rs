@@ -12,14 +12,14 @@ unused_import_braces, unused_qualifications)]
 extern crate dot;
 
 mod render;
-mod variable;
-mod factor;
+pub mod variable;
+pub mod factor;
 
 use std::collections::HashMap;
 use std::io::Write;
 
-use variable::{Variable, DiscreteVariable};
-use factor::Factor;
+pub use variable::{Variable, DiscreteVariable};
+pub use factor::Factor;
 
 type PotentialFunc = fn(&[u32]) -> i32;
 
