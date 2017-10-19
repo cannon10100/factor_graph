@@ -1,10 +1,10 @@
 [package]
+authors = ["cannon <cannon10100@gmail.com>"]
 name = "factor_graph"
 version = "0.1.0"
-authors = ["cannon <cannon10100@gmail.com>"]
+[[bin]]
+doc = false
+name = "factor_graph"
 
 [dependencies]
-
-[[bin]]
-name = "factor_graph"
-doc = false
+dot = "0.1.2"
