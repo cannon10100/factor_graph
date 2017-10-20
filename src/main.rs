@@ -17,40 +17,46 @@ fn dummy_func(args: &[u32]) -> i32 {
     args.len() as i32
 }
 
-fn main() {
-    // As an example, we build an Ising model
+fn make_ising_model(x_dim: u32, y_dim: u32) -> FactorGraph {
     let mut graph = FactorGraph::new();
 
-    for i in 0..10 {
-        for j in 0..10 {
+    for i in 0..x_dim {
+        for j in 0..y_dim {
             graph.add_discrete_var(&format!("({},{})", i, j), vec![0,1]);
         }
     }
 
     // Add factors between adjacent nodes
-    for i in 0..10 {
-        for j in 0..10 {
+    for i in 0..x_dim {
+        for j in 0..y_dim {
             if i > 0 {
                 graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i - 1, j)),
-                                    String::from(format!("({},{})", i, j))), dummy_func);
+                                             String::from(format!("({},{})", i, j))), dummy_func);
             }
 
             if j > 0 {
                 graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i, j - 1)),
-                                    String::from(format!("({},{})", i, j))), dummy_func);
+                                             String::from(format!("({},{})", i, j))), dummy_func);
             }
 
-            if j < 9 {
+            if j < y_dim - 1 {
                 graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i, j + 1)),
-                                    String::from(format!("({},{})", i, j))), dummy_func);
+                                             String::from(format!("({},{})", i, j))), dummy_func);
             }
 
-            if i < 9 {
+            if i < x_dim - 1 {
                 graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i + 1, j)),
-                                    String::from(format!("({},{})", i, j))), dummy_func);
+                                             String::from(format!("({},{})", i, j))), dummy_func);
             }
         }
     }
+
+    graph
+}
+
+fn main() {
+    // As an example, we build an Ising model
+    let graph = make_ising_model(20, 20);
 
 //    println!("Graph: {:#?}", graph);
 //
