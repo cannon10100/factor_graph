@@ -67,18 +67,19 @@ impl FactorGraph {
     /// Add a new variable with the specified name to the factor graph.
     pub fn add_discrete_var<T : std::fmt::Debug + Clone + 'static>(&mut self, name: &str, val_names: Vec<T>) {
         self.variables.insert(String::from(name),
-                              Box::new(DiscreteVariable::new(self.next_id,name, val_names.clone())));
+                              Box::new(DiscreteVariable::new(self.next_id, name, val_names.clone())));
         self.all_items.insert(self.next_id as usize,
-                              Box::new(DiscreteVariable::new(self.next_id,name, val_names)));
+                              Box::new(DiscreteVariable::new(self.next_id, name, val_names)));
         self.next_id += 1;
     }
 
     /// Add a new factor with the specified variables to the factor graph.
-    pub fn add_factor(&mut self, variables: Vec<String>, func: PotentialFunc) {
+    pub fn add_factor<T: std::fmt::Debug + 'static>(&mut self, variables: Vec<String>, func: PotentialFunc) {
         for var in variables.iter() {
             match self.variables.get_mut(var) {
-                Some(var_obj) => var_obj.add_factor(
-                    Factor::new(self.next_id,variables.clone(), func)),
+                Some(var_obj) => {
+                    var_obj.add_factor(Factor::new(self.next_id,variables.clone(), func));
+                },
                 None => panic!("The variable {} was not found in the factor graph.", var)
             }
         }
@@ -105,28 +106,28 @@ impl FactorGraph {
             None => panic!("Root variable not found")
         };
 
-        let mut spanning_tree = SpanningTree::new(root.get_id(), self.all_items.len());
+        let mut spanning_tree = SpanningTree::new(root.get_id(),
+                                                  &root.get_name(),
+                                                  self.all_items.len());
         let mut queue: VecDeque<&Box<FactorGraphItem>> = VecDeque::new();
-
-        for n_id in root.get_neighbors(&self.variables) {
-            spanning_tree.add_child((*root).get_id(), n_id);
-            if queue.iter().filter(|x| (*x).get_id() == n_id).count() == 0 {
-                queue.push_back(match self.all_items.get(n_id as usize) {
-                    Some(y) => y,
-                    None => panic!("Could not find id in factor graph")
-                });
-            }
-        }
+        queue.push_back(match self.all_items.get(root.get_id() as usize) {
+            Some(y) => y,
+            None => panic!("Could not find id in factor graph")
+        });
 
         // BFS through the graph, recording the spanning tree.
         while !queue.is_empty() {
+            println!("{:?}", queue);
             let node = match queue.pop_front() {
                 Some(x) => x,
                 None => panic!("Queue is unexpectedly empty")
             };
 
+            println!("{:?}", node.get_neighbors(&self.variables));
+
             for n_id in node.get_neighbors(&self.variables) {
-                spanning_tree.add_child((*node).get_id(), n_id);
+                println!("Adding node {}", n_id);
+                spanning_tree.add_child((*node).get_id(), n_id, &node.get_name());
                 if queue.iter().filter(|x| (*x).get_id() == n_id).count() == 0 {
                     queue.push_back(match self.all_items.get(n_id as usize) {
                         Some(y) => y,
@@ -137,6 +138,11 @@ impl FactorGraph {
         }
 
         spanning_tree
+    }
+
+    /// Render a spanning tree for the factor graph to the input file, starting from the input variable.
+    pub fn render_spanning_tree_to<W: Write>(&self, root_var: &str, output: &mut W) {
+        self.make_spanning_tree(root_var).render_to(output)
     }
 }
 

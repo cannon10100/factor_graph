@@ -21,43 +21,52 @@ fn main() {
     // As an example, we build an Ising model
     let mut graph = FactorGraph::new();
 
-    for i in 0..10 {
-        for j in 0..10 {
+    for i in 0..3 {
+        for j in 0..3 {
             graph.add_discrete_var(&format!("({},{})", i, j), vec![0,1]);
         }
     }
 
     // Add factors between adjacent nodes
-    for i in 0..10 {
-        for j in 0..10 {
+    for i in 0..3 {
+        for j in 0..3 {
             if i > 0 {
-                graph.add_factor(vec!(String::from(format!("({},{})", i - 1, j)),
+                graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i - 1, j)),
                                     String::from(format!("({},{})", i, j))), dummy_func);
             }
 
             if j > 0 {
-                graph.add_factor(vec!(String::from(format!("({},{})", i, j - 1)),
+                graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i, j - 1)),
                                     String::from(format!("({},{})", i, j))), dummy_func);
             }
 
-            if j < 9 {
-                graph.add_factor(vec!(String::from(format!("({},{})", i, j + 1)),
+            if j < 2 {
+                graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i, j + 1)),
                                     String::from(format!("({},{})", i, j))), dummy_func);
             }
 
-            if i < 9 {
-                graph.add_factor(vec!(String::from(format!("({},{})", i + 1, j)),
+            if i < 2 {
+                graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i + 1, j)),
                                     String::from(format!("({},{})", i, j))), dummy_func);
             }
         }
     }
 
+    println!("Graph: {:#?}", graph);
+
     // println!("Graph: {:#?}", graph);
     println!("Spanning tree: {:#?}", graph.make_spanning_tree("(0,0)"));
 
-    let mut f = match File::create("factor_graph.dot") {
+    let mut graph_file = match File::create("factor_graph.dot") {
         Ok(some) => some,
         Err(_) => panic!("Could not create file")
     };
-    graph.render_to(&mut f)
+
+    let mut spanning_tree_file = match File::create("spanning_tree.dot") {
+        Ok(some) => some,
+        Err(_) => panic!("Could not create file")
+    };
+
+    graph.render_to(&mut graph_file);
+    graph.render_spanning_tree_to("(0,0)", &mut spanning_tree_file)
 }

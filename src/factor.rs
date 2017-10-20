@@ -8,7 +8,6 @@ unused_import_braces, unused_qualifications)]
 //! Module holding factor-specific functionality
 
 use *;
-use std::any::Any;
 
 type PotentialFunc = fn(&[u32]) -> i32;
 
@@ -57,7 +56,7 @@ impl FactorGraphItem for Factor {
 
     fn add_to_tree(&self, parent_id: u32, tree: &mut SpanningTree) {
         if !tree.has_node(self.id) {
-            tree.add_child(parent_id, self.id);
+            tree.add_child(parent_id, self.id, &self.get_name());
         }
     }
 

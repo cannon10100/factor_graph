@@ -40,14 +40,14 @@ impl<T: std::fmt::Debug + 'static> DiscreteVariable<T> {
             name: String::from(name),
             factors: vec!(),
             val_names,
-            domain: (0..(num_names + 1)).collect()
+            domain: (0..(num_names)).collect()
         }
     }
 }
 
 impl<T: std::fmt::Debug + 'static> Variable for DiscreteVariable<T> {
     fn get_var_id(&self) -> u32 {
-        self.id
+        self.id.clone()
     }
 
     fn add_factor(&mut self, factor: Factor) {
@@ -74,7 +74,7 @@ impl<T: std::fmt::Debug + Sized> FactorGraphItem for DiscreteVariable<T> {
 
     fn add_to_tree(&self, parent_id: u32, tree: &mut SpanningTree) {
         if !tree.has_node(self.id) {
-            tree.add_child(parent_id, self.id);
+            tree.add_child(parent_id, self.id, &self.name);
         }
     }
 
