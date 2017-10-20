@@ -8,8 +8,12 @@ unused_import_braces, unused_qualifications)]
 //! Crate allowing creation and manipulation of probabilistic factor graphs.
 
 extern crate factor_graph;
+extern crate getopts;
 
 use std::fs::File;
+use std::env;
+
+use getopts::Options;
 
 use factor_graph::FactorGraph;
 
@@ -54,9 +58,41 @@ fn make_ising_model(x_dim: u32, y_dim: u32) -> FactorGraph {
     graph
 }
 
+fn print_usage(program: &str, opts: Options) {
+    let brief = format!("Usage: {} [options]", program);
+    print!("{}", opts.usage(&brief));
+}
+
 fn main() {
+    let args: Vec<String> = env::args().collect();
+    let program = args[0].clone();
+    let mut x = 10;
+    let mut y = 10;
+
+    let mut opts = Options::new();
+    opts.optopt("x", "", "set ising model x_dim", "X");
+    opts.optopt("y", "", "set ising model y_dim", "Y");
+    opts.optflag("h", "help", "print this help menu");
+
+    let matches = match opts.parse(&args[1..]) {
+        Ok(m) => { m }
+        Err(f) => { panic!(f.to_string()) }
+    };
+
+    if matches.opt_present("h") {
+        print_usage(&program, opts);
+        return;
+    }
+
+    if let Some(thing) = matches.opt_str("x") {
+        x = thing.parse().unwrap();
+    }
+    if let Some(thing) = matches.opt_str("y") {
+        y = thing.parse().unwrap();
+    }
+
     // As an example, we build an Ising model
-    let graph = make_ising_model(20, 20);
+    let graph = make_ising_model(x, y);
 
 //    println!("Graph: {:#?}", graph);
 //
@@ -73,5 +109,5 @@ fn main() {
     };
 
     graph.render_to(&mut graph_file);
-    graph.render_spanning_tree_to("(5,5)", &mut spanning_tree_file)
+    graph.render_spanning_tree_to("(0,0)", &mut spanning_tree_file)
 }

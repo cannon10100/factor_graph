@@ -8,3 +8,4 @@ name = "factor_graph"
 
 [dependencies]
 dot = "0.1.2"
+getopts = "0.2.15"
