@@ -34,11 +34,11 @@ impl<'a> dot::Labeller<'a, Nd, Ed> for FactorGraph {
     }
 
     fn node_label<'b>(&'b self, n: &Nd) -> dot::LabelText<'b> {
-        dot::LabelText::LabelStr(self.all_items[*n].get_name().into())
+        dot::LabelText::LabelStr(self.all_names[*n].clone().into())
     }
 
     fn node_shape(&'a self, node: &Nd) -> Option<dot::LabelText<'a>> {
-        match self.all_items[*node].is_factor() {
+        match self.is_factor[*node] {
             true => Some(dot::LabelText::LabelStr("box".into())),
             false => Some(dot::LabelText::LabelStr("circle".into()))
         }

@@ -59,16 +59,4 @@ impl FactorGraphItem for Factor {
             tree.add_child(parent_id, self.id, &self.get_name());
         }
     }
-
-    fn get_neighbors(&self, variables: &HashMap<String, Box<Variable>>) -> Vec<u32> {
-        let mut ret_vec = Vec::with_capacity(self.variables.len());
-
-        for variable in self.variables.iter() {
-            match variables.get(variable) {
-                Some(var_obj) => ret_vec.push(var_obj.get_var_id()),
-                None => panic!("Variable not found for factor.")
-            }
-        }
-        ret_vec
-    }
 }

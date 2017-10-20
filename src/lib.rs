@@ -37,9 +37,6 @@ pub trait FactorGraphItem : std::fmt::Debug {
     /// Return whether the item is a factor.
     fn is_factor(&self) -> bool;
 
-    /// Get the neighbors of this item in the factor graph.
-    fn get_neighbors(&self, variables: &HashMap<String, Box<Variable>>) -> Vec<u32>;
-
     /// Add this node to the spanning tree.
     fn add_to_tree(&self, parent_id: u32, tree: &mut SpanningTree);
 }
@@ -49,8 +46,9 @@ pub trait FactorGraphItem : std::fmt::Debug {
 pub struct FactorGraph {
     variables: HashMap<String, Box<Variable>>,
     factors: Vec<Factor>,
-    all_items: Vec<Box<FactorGraphItem>>,
     next_id: u32,
+    all_names: Vec<String>,
+    is_factor: Vec<bool>,
 }
 
 impl FactorGraph {
@@ -59,17 +57,20 @@ impl FactorGraph {
         FactorGraph {
             variables: HashMap::new(),
             factors: vec!(),
-            all_items: vec!(),
-            next_id: 0
+            next_id: 0,
+            all_names: vec!(),
+            is_factor: vec!(),
         }
     }
 
     /// Add a new variable with the specified name to the factor graph.
     pub fn add_discrete_var<T : std::fmt::Debug + Clone + 'static>(&mut self, name: &str, val_names: Vec<T>) {
+        let new_var = DiscreteVariable::new(self.next_id, name, val_names.clone());
+
         self.variables.insert(String::from(name),
-                              Box::new(DiscreteVariable::new(self.next_id, name, val_names.clone())));
-        self.all_items.insert(self.next_id as usize,
-                              Box::new(DiscreteVariable::new(self.next_id, name, val_names)));
+                              Box::new(new_var));
+        self.all_names.insert(self.next_id as usize, String::from(name));
+        self.is_factor.insert(self.next_id as usize, false);
         self.next_id += 1;
     }
 
@@ -85,9 +86,10 @@ impl FactorGraph {
         }
 
         self.factors.push(Factor::new(self.next_id, variables.clone(), func));
-        self.all_items.insert(self.next_id as usize,
-                              Box::new(
-                                  Factor::new(self.next_id, variables.clone(), func)));
+
+        self.all_names.insert(self.next_id as usize, String::from(format!("factor<{:?}>", variables.clone())));
+        self.is_factor.insert(self.next_id as usize, true);
+
         self.next_id += 1;
     }
 
@@ -108,31 +110,55 @@ impl FactorGraph {
 
         let mut spanning_tree = SpanningTree::new(root.get_id(),
                                                   &root.get_name(),
-                                                  self.all_items.len());
-        let mut queue: VecDeque<&Box<FactorGraphItem>> = VecDeque::new();
-        queue.push_back(match self.all_items.get(root.get_id() as usize) {
-            Some(y) => y,
-            None => panic!("Could not find id in factor graph")
-        });
+                                                  self.variables.values().len());
+
+        let mut var_iteration = true;
+        let mut var_queue: VecDeque<&Box<Variable>> = VecDeque::new();
+        let mut factor_queue: VecDeque<&Factor> = VecDeque::new();
+        var_queue.push_back(root);
 
         // BFS through the graph, recording the spanning tree.
-        while !queue.is_empty() {
-            println!("{:?}", queue);
-            let node = match queue.pop_front() {
-                Some(x) => x,
-                None => panic!("Queue is unexpectedly empty")
-            };
+        while !var_queue.is_empty() || !factor_queue.is_empty() {
+            if var_iteration {
+                let node = match var_queue.pop_front() {
+                    Some(x) => x,
+                    None => panic!("Queue is unexpectedly empty")
+                };
 
-            println!("{:?}", node.get_neighbors(&self.variables));
+                for factor in node.get_factors() {
+                    if !spanning_tree.has_node(factor.get_id()) {
+                        spanning_tree.add_child((*node).get_id(), factor.get_id(), &factor.get_name());
+                        if factor_queue.iter().filter(|x| (*x).get_id() == factor.get_id()).count() == 0 {
+                            factor_queue.push_back(factor);
+                        }
+                    }
+                }
 
-            for n_id in node.get_neighbors(&self.variables) {
-                println!("Adding node {}", n_id);
-                spanning_tree.add_child((*node).get_id(), n_id, &node.get_name());
-                if queue.iter().filter(|x| (*x).get_id() == n_id).count() == 0 {
-                    queue.push_back(match self.all_items.get(n_id as usize) {
-                        Some(y) => y,
-                        None => panic!("Could not find id in factor graph")
-                    });
+                if var_queue.is_empty() {
+                    var_iteration = false;
+                }
+            } else {
+                let node = match factor_queue.pop_front() {
+                    Some(x) => x,
+                    None => panic!("Queue is unexpectedly empty")
+                };
+
+                for var_name in node.get_variables() {
+                    let var = match self.variables.get(var_name) {
+                        Some(x) => x,
+                        None => panic!("Could not find variable with name {}", var_name)
+                    };
+
+                    if !spanning_tree.has_node(var.get_id()) {
+                        spanning_tree.add_child(node.get_id(), var.get_id(), &var.get_name());
+                        if var_queue.iter().filter(|x| x.get_id() == var.get_id()).count() == 0 {
+                            var_queue.push_back(var);
+                        }
+                    }
+                }
+
+                if factor_queue.is_empty() {
+                    var_iteration = true;
                 }
             }
         }
@@ -160,7 +186,7 @@ mod tests {
         let mut graph = FactorGraph::new();
 
         graph.add_discrete_var("first", vec![1, 2]);
-        graph.add_factor(vec!(String::from("second")), dummy_func);
+        graph.add_factor::<i32>(vec!(String::from("second")), dummy_func);
     }
 
     #[test]
@@ -168,7 +194,7 @@ mod tests {
         let mut graph = FactorGraph::new();
 
         graph.add_discrete_var("first", vec![1, 2]);
-        graph.add_factor(vec!(String::from("first")), dummy_func);
+        graph.add_factor::<i32>(vec!(String::from("first")), dummy_func);
 
         assert_eq!(graph.variables.get("first").unwrap().get_factors()[0].get_variables(),
                    graph.factors[0].get_variables())

@@ -77,14 +77,4 @@ impl<T: std::fmt::Debug + Sized> FactorGraphItem for DiscreteVariable<T> {
             tree.add_child(parent_id, self.id, &self.name);
         }
     }
-
-    fn get_neighbors(&self, variables: &HashMap<String, Box<Variable>>) -> Vec<u32> {
-        let mut ret_vec = vec!();
-
-        for factor in self.factors.iter() {
-            ret_vec.push(factor.get_id());
-        }
-
-        ret_vec
-    }
 }

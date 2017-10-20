@@ -21,15 +21,15 @@ fn main() {
     // As an example, we build an Ising model
     let mut graph = FactorGraph::new();
 
-    for i in 0..3 {
-        for j in 0..3 {
+    for i in 0..10 {
+        for j in 0..10 {
             graph.add_discrete_var(&format!("({},{})", i, j), vec![0,1]);
         }
     }
 
     // Add factors between adjacent nodes
-    for i in 0..3 {
-        for j in 0..3 {
+    for i in 0..10 {
+        for j in 0..10 {
             if i > 0 {
                 graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i - 1, j)),
                                     String::from(format!("({},{})", i, j))), dummy_func);
@@ -40,22 +40,21 @@ fn main() {
                                     String::from(format!("({},{})", i, j))), dummy_func);
             }
 
-            if j < 2 {
+            if j < 9 {
                 graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i, j + 1)),
                                     String::from(format!("({},{})", i, j))), dummy_func);
             }
 
-            if i < 2 {
+            if i < 9 {
                 graph.add_factor::<i32>(vec!(String::from(format!("({},{})", i + 1, j)),
                                     String::from(format!("({},{})", i, j))), dummy_func);
             }
         }
     }
 
-    println!("Graph: {:#?}", graph);
-
-    // println!("Graph: {:#?}", graph);
-    println!("Spanning tree: {:#?}", graph.make_spanning_tree("(0,0)"));
+//    println!("Graph: {:#?}", graph);
+//
+//    println!("Spanning tree: {:#?}", graph.make_spanning_tree("(0,0)"));
 
     let mut graph_file = match File::create("factor_graph.dot") {
         Ok(some) => some,
@@ -68,5 +67,5 @@ fn main() {
     };
 
     graph.render_to(&mut graph_file);
-    graph.render_spanning_tree_to("(0,0)", &mut spanning_tree_file)
+    graph.render_spanning_tree_to("(5,5)", &mut spanning_tree_file)
 }
