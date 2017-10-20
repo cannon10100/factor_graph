@@ -5,7 +5,7 @@ An implementation of probabilistic factor graphs in Rust.
 I'm still sketching out the general design of this library, so it'll be a while before things are up and running for inference. My first goal is to implement the **sum-product** and **max-sum** algorithms for factor graphs composed of only discrete variables.
 
 ## Documentation
-See the generated Rust documentation [here](cannontwo.com/factor_graph).
+See the generated Rust documentation [here](http://cannontwo.com/factor_graph).
 
 ## Usage
 You can compile and run the factor_graph binary with
