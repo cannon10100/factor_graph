@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["factor","Module holding factor-specific functionality"],["tree","Module with spanning tree code"],["variable","Module with variable-specific functionality"]],"struct":[["FactorGraph","Struct representing the full factor graph."]],"trait":[["FactorGraphItem","Trait representing a generic item stored in the factor graph."]]});

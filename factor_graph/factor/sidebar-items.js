@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Factor","Struct representing a factor over several variables."]]});

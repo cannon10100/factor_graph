@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DiscreteVariable","Struct representing a single variable."]],"trait":[["Variable","Trait representing a variable stored in the factor graph."]]});

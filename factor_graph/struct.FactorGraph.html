@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `FactorGraph` struct in crate `factor_graph`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, FactorGraph">
+
+    <title>factor_graph::FactorGraph - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct FactorGraph</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>factor_graph</a></p><script>window.sidebarCurrent = {name: 'FactorGraph', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>factor_graph</a>::<wbr><a class="struct" href=''>FactorGraph</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/factor_graph/lib.rs.html#46-52' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct FactorGraph { /* fields omitted */ }</pre><div class='docblock'><p>Struct representing the full factor graph.</p>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../factor_graph/struct.FactorGraph.html" title="struct factor_graph::FactorGraph">FactorGraph</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#54-173' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class="struct" href="../factor_graph/struct.FactorGraph.html" title="struct factor_graph::FactorGraph">FactorGraph</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#56-64' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Create an empty FactorGraph</p>
+</div><h4 id='method.add_discrete_var' class="method"><span id='add_discrete_var.v' class='invisible'><code>fn <a href='#method.add_discrete_var' class='fnname'>add_discrete_var</a>&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> + 'static&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;name: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;val_names: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;T&gt;<br>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#67-75' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Add a new variable with the specified name to the factor graph.</p>
+</div><h4 id='method.add_factor' class="method"><span id='add_factor.v' class='invisible'><code>fn <a href='#method.add_factor' class='fnname'>add_factor</a>&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> + 'static&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;variables: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;func: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.fn.html">fn</a>(_: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a><br>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#78-94' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Add a new factor with the specified variables to the factor graph.</p>
+</div><h4 id='method.render_to' class="method"><span id='render_to.v' class='invisible'><code>fn <a href='#method.render_to' class='fnname'>render_to</a>&lt;W:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>&gt;(&amp;self, output: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>W)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#97-102' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Render this graph to a Graphviz file</p>
+</div><h4 id='method.make_spanning_tree' class="method"><span id='make_spanning_tree.v' class='invisible'><code>fn <a href='#method.make_spanning_tree' class='fnname'>make_spanning_tree</a>(&amp;self, var: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; <a class="struct" href="../factor_graph/tree/struct.SpanningTree.html" title="struct factor_graph::tree::SpanningTree">SpanningTree</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#105-167' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Make a spanning tree from the current factor graph with the specified root variable.</p>
+</div><h4 id='method.render_spanning_tree_to' class="method"><span id='render_spanning_tree_to.v' class='invisible'><code>fn <a href='#method.render_spanning_tree_to' class='fnname'>render_spanning_tree_to</a>&lt;W:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>&gt;(&amp;self, root_var: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>, output: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>W)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#170-172' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Render a spanning tree for the factor graph to the input file, starting from the input variable.</p>
+</div></div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Labeller&lt;&#39;a, usize, (usize, usize)&gt;' class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class="trait" href="../dot/trait.Labeller.html" title="trait dot::Labeller">Labeller</a>&lt;'a, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>&gt; for <a class="struct" href="../factor_graph/struct.FactorGraph.html" title="struct factor_graph::FactorGraph">FactorGraph</a></code><a href='#impl-Labeller&lt;&#39;a, usize, (usize, usize)&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#21-50' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.graph_id' class="method"><span id='graph_id.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#tymethod.graph_id' class='fnname'>graph_id</a>(&amp;'a self) -&gt; <a class="struct" href="../dot/struct.Id.html" title="struct dot::Id">Id</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#22-27' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Must return a DOT compatible identifier naming the graph.</p>
+</div><h4 id='method.node_id' class="method"><span id='node_id.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#tymethod.node_id' class='fnname'>node_id</a>(&amp;'a self, n: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="struct" href="../dot/struct.Id.html" title="struct dot::Id">Id</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#29-34' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Maps <code>n</code> to a unique identifier with respect to <code>self</code>. The implementer is responsible for ensuring that the returned name is a valid DOT identifier. <a href="../dot/trait.Labeller.html#tymethod.node_id">Read more</a></p>
+</div><h4 id='method.node_label' class="method"><span id='node_label.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#method.node_label' class='fnname'>node_label</a>&lt;'b&gt;(&amp;'b self, n: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="../dot/enum.LabelText.html" title="enum dot::LabelText">LabelText</a>&lt;'b&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#36-38' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Maps <code>n</code> to a label that will be used in the rendered output. The label need not be unique, and may be the empty string; the default is just the output from <code>node_id</code>. <a href="../dot/trait.Labeller.html#method.node_label">Read more</a></p>
+</div><h4 id='method.node_shape' class="method"><span id='node_shape.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#method.node_shape' class='fnname'>node_shape</a>(&amp;'a self, node: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="enum" href="../dot/enum.LabelText.html" title="enum dot::LabelText">LabelText</a>&lt;'a&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#40-45' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Maps <code>n</code> to one of the [graphviz <code>shape</code> names][1]. If <code>None</code> is returned, no <code>shape</code> attribute is specified. <a href="../dot/trait.Labeller.html#method.node_shape">Read more</a></p>
+</div><h4 id='method.edge_end_arrow' class="method"><span id='edge_end_arrow.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#method.edge_end_arrow' class='fnname'>edge_end_arrow</a>(&amp;'a self, _e: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>) -&gt; <a class="struct" href="../dot/struct.Arrow.html" title="struct dot::Arrow">Arrow</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#47-49' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Maps <code>e</code> to arrow style that will be used on the end of an edge. Defaults to normal. <a href="../dot/trait.Labeller.html#method.edge_end_arrow">Read more</a></p>
+</div><h4 id='method.edge_label' class="method"><span id='edge_label.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#method.edge_label' class='fnname'>edge_label</a>(&amp;'a self, e: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>E) -&gt; <a class="enum" href="../dot/enum.LabelText.html" title="enum dot::LabelText">LabelText</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/dot/lib.rs.html#462-465' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Maps <code>e</code> to a label that will be used in the rendered output. The label need not be unique, and may be the empty string; the default is in fact the empty string. <a href="../dot/trait.Labeller.html#method.edge_label">Read more</a></p>
+</div><h4 id='method.node_style' class="method"><span id='node_style.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#method.node_style' class='fnname'>node_style</a>(&amp;'a self, _n: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>N) -&gt; <a class="enum" href="../dot/enum.Style.html" title="enum dot::Style">Style</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/dot/lib.rs.html#468-470' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Maps <code>n</code> to a style that will be used in the rendered output.</p>
+</div><h4 id='method.edge_start_arrow' class="method"><span id='edge_start_arrow.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#method.edge_start_arrow' class='fnname'>edge_start_arrow</a>(&amp;'a self, _e: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>E) -&gt; <a class="struct" href="../dot/struct.Arrow.html" title="struct dot::Arrow">Arrow</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/dot/lib.rs.html#480-482' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Maps <code>e</code> to arrow style that will be used on the end of an edge. Defaults to no arrow style. <a href="../dot/trait.Labeller.html#method.edge_start_arrow">Read more</a></p>
+</div><h4 id='method.edge_style' class="method"><span id='edge_style.v' class='invisible'><code>fn <a href='../dot/trait.Labeller.html#method.edge_style' class='fnname'>edge_style</a>(&amp;'a self, _e: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>E) -&gt; <a class="enum" href="../dot/enum.Style.html" title="enum dot::Style">Style</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/dot/lib.rs.html#485-487' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Maps <code>e</code> to a style that will be used in the rendered output.</p>
+</div></div><h3 id='impl-GraphWalk&lt;&#39;a, usize, (usize, usize)&gt;' class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class="trait" href="../dot/trait.GraphWalk.html" title="trait dot::GraphWalk">GraphWalk</a>&lt;'a, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>&gt; for <a class="struct" href="../factor_graph/struct.FactorGraph.html" title="struct factor_graph::FactorGraph">FactorGraph</a></code><a href='#impl-GraphWalk&lt;&#39;a, usize, (usize, usize)&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#52-77' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.nodes' class="method"><span id='nodes.v' class='invisible'><code>fn <a href='../dot/trait.GraphWalk.html#tymethod.nodes' class='fnname'>nodes</a>(&amp;self) -&gt; <a class="type" href="../dot/type.Nodes.html" title="type dot::Nodes">Nodes</a>&lt;'a, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#53-61' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns all the nodes in this graph.</p>
+</div><h4 id='method.edges' class="method"><span id='edges.v' class='invisible'><code>fn <a href='../dot/trait.GraphWalk.html#tymethod.edges' class='fnname'>edges</a>(&amp;'a self) -&gt; <a class="type" href="../dot/type.Edges.html" title="type dot::Edges">Edges</a>&lt;'a, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#63-72' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns all of the edges in this graph.</p>
+</div><h4 id='method.source' class="method"><span id='source.v' class='invisible'><code>fn <a href='../dot/trait.GraphWalk.html#tymethod.source' class='fnname'>source</a>(&amp;self, e: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#74' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>The source node for <code>edge</code>.</p>
+</div><h4 id='method.target' class="method"><span id='target.v' class='invisible'><code>fn <a href='../dot/trait.GraphWalk.html#tymethod.target' class='fnname'>target</a>(&amp;self, e: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/render.rs.html#76' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>The target node for <code>edge</code>.</p>
+</div></div><h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../factor_graph/struct.FactorGraph.html" title="struct factor_graph::FactorGraph">FactorGraph</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#45' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/factor_graph/lib.rs.html#45' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "factor_graph";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

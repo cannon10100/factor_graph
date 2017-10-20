@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SpanningTree","Struct representing a spanning tree over an underlying factor graph."],["TreeNode","Struct representing a node in the tree."]]});
